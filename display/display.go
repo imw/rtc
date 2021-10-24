@@ -110,23 +110,26 @@ func drawBox(s tcell.Screen, x1, y1, x2, y2 int, style tcell.Style, text string)
 		}
 	}
 
-	// Draw borders
-	for col := x1; col <= x2; col++ {
-		s.SetContent(col, y1, tcell.RuneHLine, nil, style)
-		s.SetContent(col, y2, tcell.RuneHLine, nil, style)
-	}
-	for row := y1 + 1; row < y2; row++ {
-		s.SetContent(x1, row, tcell.RuneVLine, nil, style)
-		s.SetContent(x2, row, tcell.RuneVLine, nil, style)
-	}
+	/*
+			// Draw borders
+			for col := x1; col <= x2; col++ {
+				s.SetContent(col, y1, tcell.RuneHLine, nil, style)
+				s.SetContent(col, y2, tcell.RuneHLine, nil, style)
+			}
+			for row := y1 + 1; row < y2; row++ {
+				s.SetContent(x1, row, tcell.RuneVLine, nil, style)
+				s.SetContent(x2, row, tcell.RuneVLine, nil, style)
+			}
 
-	// Only draw corners if necessary
-	if y1 != y2 && x1 != x2 {
-		s.SetContent(x1, y1, tcell.RuneULCorner, nil, style)
-		s.SetContent(x2, y1, tcell.RuneURCorner, nil, style)
-		s.SetContent(x1, y2, tcell.RuneLLCorner, nil, style)
-		s.SetContent(x2, y2, tcell.RuneLRCorner, nil, style)
-	}
+		// Only draw corners if necessary
+		if y1 != y2 && x1 != x2 {
+			s.SetContent(x1, y1, tcell.RuneULCorner, nil, style)
+			s.SetContent(x2, y1, tcell.RuneURCorner, nil, style)
+			s.SetContent(x1, y2, tcell.RuneLLCorner, nil, style)
+			s.SetContent(x2, y2, tcell.RuneLRCorner, nil, style)
+		}
+
+	*/
 	offset := len(text) / 2
 	hcenter := ((x2 - x1) / 2) + x1
 	vcenter := ((y2 - y1) / 2) + y1
@@ -167,14 +170,16 @@ func Render(b *board.Board, s tcell.Screen) {
 	dims := fmt.Sprint(w, h, leftBound, upperBound, rightBound, lowerBound)
 	drawBox(s, leftBound, upperBound, rightBound, lowerBound, defStyle, dims)
 	style := tcell.StyleDefault
+	styleWhite := tcell.StyleDefault.Background(tcell.ColorGhostWhite).Foreground(tcell.ColorBlack)
+	styleBlack := tcell.StyleDefault.Background(tcell.ColorBlack).Foreground(tcell.ColorGhostWhite)
 	sqs := b.Flatten()
 	for _, sq := range sqs {
 		x, y := sq.Indices()
 		color := sq.Color()
 		if color == board.White {
-			style.Background(tcell.ColorGhostWhite).Foreground(tcell.ColorGhostWhite)
+			style = styleWhite
 		} else {
-			style.Background(tcell.ColorBlack).Foreground(tcell.ColorBlack)
+			style = styleBlack
 		}
 		s.SetStyle(style)
 		left := leftBound + x*sqWidth
