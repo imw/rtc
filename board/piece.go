@@ -4,8 +4,9 @@ type Piece interface {
 	//	Moves()
 	//	Stats()
 	Name() string
-	Ascii() rune
-	Unicode() rune
+	Ascii() string
+	Unicode() string
+	Side() Color
 }
 
 type piece struct {
@@ -15,17 +16,17 @@ type piece struct {
 
 //Unicode glyphs
 const (
-	WhiteKing   = '\u2654'
-	WhiteQueen  = '\u2655'
-	WhiteRook   = '\u2656'
-	WhiteBishop = '\u2657'
-	WhiteKnight = '\u2658'
-	WhitePawn   = '\u2659'
+	OutlineKing   = '\u2654'
+	OutlineQueen  = '\u2655'
+	OutlineRook   = '\u2656'
+	OutlineBishop = '\u2657'
+	OutlineKnight = '\u2658'
+	OutlinePawn   = '\u2659'
 
-	BlackKing   = '\u265A'
-	BlackQueen  = '\u265B'
-	BlackRook   = '\u265C'
-	BlackBishop = '\u265D'
-	BlackKnight = '\u265E'
-	BlackPawn   = '\u265F'
+	FillKing   = '\u265A'
+	FillQueen  = '\u265B'
+	FillRook   = '\u265C'
+	FillBishop = '\u265D'
+	FillKnight = '\u265E'
+	FillPawn   = '\u265F'
 )

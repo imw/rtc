@@ -18,19 +18,18 @@ func (p *Bishop) Name() string {
 	return p.core.name
 }
 
-func (p *Bishop) Ascii() rune {
+func (p *Bishop) Ascii() string {
 	if p.core.side == White {
-		return 'b'
+		return string('b')
 	} else {
-		return 'B'
+		return string('B')
 	}
 }
 
-func (p *Bishop) Unicode() rune {
-	if p.core.side == White {
-		return WhiteBishop
-	} else {
-		return BlackBishop
-	}
+func (p *Bishop) Unicode() string {
+	return string(FillBishop)
+}
 
+func (p *Bishop) Side() Color {
+	return p.core.side
 }

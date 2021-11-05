@@ -11,7 +11,6 @@ import (
 	"0x539.lol/rtc/display"
 )
 
-// This program just prints "Hello, World!".  Press ESC to exit.
 func main() {
 	b := board.New()
 
@@ -36,7 +35,6 @@ func main() {
 		switch ev := s.PollEvent().(type) {
 		case *tcell.EventResize:
 			s.Sync()
-			display.Render(b, s)
 		case *tcell.EventKey:
 			if ev.Key() == tcell.KeyEscape {
 				s.Fini()

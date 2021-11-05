@@ -18,19 +18,18 @@ func (p *Rook) Name() string {
 	return p.core.name
 }
 
-func (p *Rook) Ascii() rune {
+func (p *Rook) Ascii() string {
 	if p.core.side == White {
-		return 'r'
+		return string('r')
 	} else {
-		return 'R'
+		return string('R')
 	}
 }
 
-func (p *Rook) Unicode() rune {
-	if p.core.side == White {
-		return WhiteRook
-	} else {
-		return BlackRook
-	}
+func (p *Rook) Unicode() string {
+	return string(FillRook)
+}
 
+func (p *Rook) Side() Color {
+	return p.core.side
 }

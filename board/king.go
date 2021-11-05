@@ -18,19 +18,18 @@ func (p *King) Name() string {
 	return p.core.name
 }
 
-func (p *King) Ascii() rune {
+func (p *King) Ascii() string {
 	if p.core.side == White {
-		return 'k'
+		return string('k')
 	} else {
-		return 'K'
+		return string('K')
 	}
 }
 
-func (p *King) Unicode() rune {
-	if p.core.side == White {
-		return WhiteKing
-	} else {
-		return BlackKing
-	}
+func (p *King) Unicode() string {
+	return string(FillKing)
+}
 
+func (p *King) Side() Color {
+	return p.core.side
 }

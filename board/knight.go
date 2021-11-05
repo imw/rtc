@@ -18,19 +18,18 @@ func (p *Knight) Name() string {
 	return p.core.name
 }
 
-func (p *Knight) Ascii() rune {
+func (p *Knight) Ascii() string {
 	if p.core.side == White {
-		return 'n'
+		return string('n')
 	} else {
-		return 'N'
+		return string('N')
 	}
 }
 
-func (p *Knight) Unicode() rune {
-	if p.core.side == White {
-		return WhiteKnight
-	} else {
-		return BlackKnight
-	}
+func (p *Knight) Unicode() string {
+	return string(FillKnight)
+}
 
+func (p *Knight) Side() Color {
+	return p.core.side
 }

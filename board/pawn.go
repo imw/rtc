@@ -18,19 +18,18 @@ func (p *Pawn) Name() string {
 	return p.core.name
 }
 
-func (p *Pawn) Ascii() rune {
+func (p *Pawn) Ascii() string {
 	if p.core.side == White {
-		return 'P'
+		return string('P')
 	} else {
-		return 'p'
+		return string('p')
 	}
 }
 
-func (p *Pawn) Unicode() rune {
-	if p.core.side == White {
-		return WhitePawn
-	} else {
-		return BlackPawn
-	}
+func (p *Pawn) Unicode() string {
+	return string(FillPawn)
+}
 
+func (p *Pawn) Side() Color {
+	return p.core.side
 }
