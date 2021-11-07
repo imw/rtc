@@ -1,12 +1,13 @@
 package board
 
 type Piece interface {
-	//	Moves()
-	//	Stats()
 	Name() string
 	Ascii() string
 	Unicode() string
 	Side() Color
+	GetMoves(Board, Square) []Square
+	Move()
+	//	Stats()
 }
 
 type piece struct {

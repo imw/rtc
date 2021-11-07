@@ -33,3 +33,12 @@ func (p *Knight) Unicode() string {
 func (p *Knight) Side() Color {
 	return p.core.side
 }
+
+//TODO: Implement
+func (p *Knight) GetMoves(board Board, loc Square) []Square {
+	moves := []Square{}
+	return moves
+}
+
+//NOOP
+func (p *Knight) Move() {}

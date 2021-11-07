@@ -13,7 +13,6 @@ type Board struct {
 
 type Color int
 
-//Use offset of 6 to ease unicode folding
 const (
 	White Color = iota
 	Black

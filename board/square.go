@@ -16,6 +16,14 @@ func (s *Square) Occupant() Piece {
 	return s.occupant
 }
 
+func (s *Square) Occupied() bool {
+	return s.occupant != nil
+}
+
+func (s *Square) Unoccupied() bool {
+	return s.occupant != nil
+}
+
 func (s *Square) Color() Color {
 	return s.color
 }

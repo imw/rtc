@@ -1,7 +1,8 @@
 package board
 
 type Rook struct {
-	core *piece
+	core  *piece
+	moved bool
 }
 
 func NewRook(side Color) Piece {
@@ -32,4 +33,14 @@ func (p *Rook) Unicode() string {
 
 func (p *Rook) Side() Color {
 	return p.core.side
+}
+
+//TODO: Implement
+func (p *Rook) GetMoves(board Board, loc Square) []Square {
+	moves := []Square{}
+	return moves
+}
+
+func (p *Rook) Move() {
+	p.moved = true
 }

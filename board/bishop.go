@@ -33,3 +33,13 @@ func (p *Bishop) Unicode() string {
 func (p *Bishop) Side() Color {
 	return p.core.side
 }
+
+//TODO: Implement
+func (p *Bishop) GetMoves(board Board, loc Square) []Square {
+	moves := []Square{}
+	return moves
+}
+
+//NOOP
+func (p *Bishop) Move() {
+}
