@@ -36,7 +36,7 @@ func (p *King) Side() Color {
 }
 
 //TODO: Implement
-func (p *King) GetMoves(board Board, loc Square) []Square {
+func (p *King) ValidMoves(board Board, loc Square) []Square {
 	moves := []Square{}
 	return moves
 }

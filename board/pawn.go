@@ -35,7 +35,7 @@ func (p *Pawn) Side() Color {
 	return p.core.side
 }
 
-func (p *Pawn) GetMoves(board Board, loc Square) []Square {
+func (p *Pawn) ValidMoves(board Board, loc Square) []Square {
 	moves := []Square{}
 	x := loc.x
 	y := loc.y

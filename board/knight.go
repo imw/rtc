@@ -35,7 +35,7 @@ func (p *Knight) Side() Color {
 }
 
 //TODO: Implement
-func (p *Knight) GetMoves(board Board, loc Square) []Square {
+func (p *Knight) ValidMoves(board Board, loc Square) []Square {
 	moves := []Square{}
 	return moves
 }
