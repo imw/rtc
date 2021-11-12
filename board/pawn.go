@@ -37,29 +37,15 @@ func (p *Pawn) Side() Color {
 
 func (p *Pawn) ValidMoves(board Board, loc Square) []Square {
 	moves := []Square{}
-	x := loc.x
-	y := loc.y
-	//move two forward from start position
+
 	if p.moved == false {
-		if board.squares[x][y-1].Unoccupied() && board.squares[x][y-2].Unoccupied() {
-			moves = append(moves, board.squares[x][y-2])
-		}
+		moves = append(moves, seekForward(board, loc, 2)...)
+	} else {
+		moves = append(moves, seekForward(board, loc, 1)...)
 	}
 
-	//move one forward
-	if board.squares[x][y-1].Unoccupied() {
-		moves = append(moves, board.squares[x][y-1])
-	}
-
-	//take left
-	if board.squares[x-1][y-1].Occupied() && (board.squares[x-1][y-1].Occupant().Side() != p.Side()) {
-		moves = append(moves, board.squares[x-1][y-1])
-	}
-
-	//take right
-	if board.squares[x+1][y-1].Occupied() && (board.squares[x+1][y-1].Occupant().Side() != p.Side()) {
-		moves = append(moves, board.squares[x+1][y-1])
-	}
+	moves = append(moves, seekForwardL(board, loc, 1)...)
+	moves = append(moves, seekForwardR(board, loc, 1)...)
 
 	return moves
 

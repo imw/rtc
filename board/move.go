@@ -8,7 +8,6 @@ const (
 )
 
 type Cursor struct {
-	board Board
 	loc   Square
 	mode  CursorMode
 	color Color
@@ -16,10 +15,10 @@ type Cursor struct {
 
 //returns slice of legal squares - all occupied squares in select mode, all
 //legal moves in insert mode
-func (c *Cursor) Choices() []Square {
+func (c *Cursor) choices(board Board) []Square {
 	if c.mode == Select {
 		sqs := []Square{}
-		for _, rank := range c.board.squares {
+		for _, rank := range board.squares {
 			for _, sq := range rank {
 				if sq.Occupied() && sq.Occupant().Side() == c.color {
 					sqs = append(sqs, sq)
@@ -29,18 +28,21 @@ func (c *Cursor) Choices() []Square {
 		return sqs
 	}
 
-	return c.loc.Occupant().ValidMoves(c.board, c.loc)
+	return c.loc.Occupant().ValidMoves(board, c.loc)
 }
 
-func search(xmotion binop, ymotion binop, board Board, loc Square) []Square {
+func search(xmotion binop, ymotion binop, board Board, loc Square, limit int) []Square {
 	moves := []Square{}
 	x := loc.x
 	y := loc.y
 	p := loc.occupant
-	for i := 1; i < boardSize; i++ {
+	for i := 1; i <= limit; i++ {
 		targetx := xmotion(x, i)
 		targety := ymotion(y, i)
-		if targetx > boardSize || targety > boardSize {
+		if targetx > boardSize || targetx < 0 {
+			break
+		}
+		if targety > boardSize || targety < 0 {
 			break
 		}
 		target := board.squares[xmotion(x, i)][ymotion(y, i)]
@@ -56,36 +58,36 @@ func search(xmotion binop, ymotion binop, board Board, loc Square) []Square {
 	return moves
 }
 
-func seekForward(board Board, loc Square) []Square {
-	return search(id, sub, board, loc)
+func seekForward(board Board, loc Square, limit int) []Square {
+	return search(id, sub, board, loc, limit)
 }
 
-func seekReverse(board Board, loc Square) []Square {
-	return search(id, add, board, loc)
+func seekReverse(board Board, loc Square, limit int) []Square {
+	return search(id, add, board, loc, limit)
 }
 
-func seekLeft(board Board, loc Square) []Square {
-	return search(sub, id, board, loc)
+func seekLeft(board Board, loc Square, limit int) []Square {
+	return search(sub, id, board, loc, limit)
 }
 
-func seekRight(board Board, loc Square) []Square {
-	return search(add, id, board, loc)
+func seekRight(board Board, loc Square, limit int) []Square {
+	return search(add, id, board, loc, limit)
 }
 
-func seekForwardL(board Board, loc Square) []Square {
-	return search(sub, add, board, loc)
+func seekForwardL(board Board, loc Square, limit int) []Square {
+	return search(sub, add, board, loc, limit)
 }
 
-func seekForwardR(board Board, loc Square) []Square {
-	return search(add, add, board, loc)
+func seekForwardR(board Board, loc Square, limit int) []Square {
+	return search(add, add, board, loc, limit)
 }
 
-func seekReverseL(board Board, loc Square) []Square {
-	return search(sub, sub, board, loc)
+func seekReverseL(board Board, loc Square, limit int) []Square {
+	return search(sub, sub, board, loc, limit)
 }
 
-func seekReverseR(board Board, loc Square) []Square {
-	return search(add, sub, board, loc)
+func seekReverseR(board Board, loc Square, limit int) []Square {
+	return search(add, sub, board, loc, limit)
 }
 
 type binop func(int, int) int

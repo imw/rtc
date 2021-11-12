@@ -36,10 +36,10 @@ func (p *Bishop) Side() Color {
 
 func (p *Bishop) ValidMoves(board Board, loc Square) []Square {
 	moves := []Square{}
-	moves = append(moves, seekForwardL(board, loc)...)
-	moves = append(moves, seekForwardR(board, loc)...)
-	moves = append(moves, seekReverseL(board, loc)...)
-	moves = append(moves, seekReverseR(board, loc)...)
+	moves = append(moves, seekForwardL(board, loc, boardSize)...)
+	moves = append(moves, seekForwardR(board, loc, boardSize)...)
+	moves = append(moves, seekReverseL(board, loc, boardSize)...)
+	moves = append(moves, seekReverseR(board, loc, boardSize)...)
 	return moves
 }
 

@@ -2,6 +2,7 @@ package display
 
 import (
 	"0x539.lol/rtc/board"
+	"0x539.lol/rtc/util"
 	"github.com/gdamore/tcell/v2"
 )
 
@@ -62,7 +63,7 @@ func drawSquare(s tcell.Screen, x1, y1, x2, y2 int, boardStyle tcell.Style, piec
 	drawText(s, hcenter-offset, vcenter, hcenter+offset, vcenter, pieceStyle, text)
 }
 
-//TODO: fix hardcoded board size
+//TODO: fix hardcoded board size?
 func Render(b *board.Board, s tcell.Screen) {
 	s.Clear()
 	defStyle := tcell.StyleDefault.Background(tcell.ColorReset).Foreground(tcell.ColorReset)
@@ -72,10 +73,12 @@ func Render(b *board.Board, s tcell.Screen) {
 	rightBound := leftBound + 64
 	upperBound := h / upperMargin
 	lowerBound := upperBound + 32
-	sqWidth := (rightBound - leftBound) / 8
-	sqHeight := (lowerBound - upperBound) / 8
+	sqWidth := (rightBound - leftBound) / b.Size()
+	sqHeight := (lowerBound - upperBound) / b.Size()
 	style := tcell.StyleDefault
 	sqs := b.Flatten()
+	loc := b.Loc()
+	targets := b.Moves()
 	for _, sq := range sqs {
 		piece := sq.Occupant()
 		var symbol string
@@ -92,6 +95,14 @@ func Render(b *board.Board, s tcell.Screen) {
 			style = style.Background(tcell.ColorDarkGray)
 		} else {
 			style = style.Background(tcell.ColorBlack)
+		}
+
+		if util.ItemExists(targets, sq) {
+			style = style.Background(tcell.ColorLightYellow)
+		}
+
+		if sq == loc {
+			style = style.Background(tcell.ColorLightBlue)
 		}
 
 		x, y := sq.Indices()

@@ -35,9 +35,17 @@ func (p *King) Side() Color {
 	return p.core.side
 }
 
-//TODO: Implement
+//TODO: Castling
 func (p *King) ValidMoves(board Board, loc Square) []Square {
 	moves := []Square{}
+	moves = append(moves, seekForward(board, loc, 1)...)
+	moves = append(moves, seekReverse(board, loc, 1)...)
+	moves = append(moves, seekLeft(board, loc, 1)...)
+	moves = append(moves, seekRight(board, loc, 1)...)
+	moves = append(moves, seekForwardL(board, loc, 1)...)
+	moves = append(moves, seekForwardR(board, loc, 1)...)
+	moves = append(moves, seekReverseL(board, loc, 1)...)
+	moves = append(moves, seekReverseR(board, loc, 1)...)
 	return moves
 }
 

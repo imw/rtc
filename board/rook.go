@@ -38,10 +38,10 @@ func (p *Rook) Side() Color {
 //TODO: Castling
 func (p *Rook) ValidMoves(board Board, loc Square) []Square {
 	moves := []Square{}
-	moves = append(moves, seekForward(board, loc)...)
-	moves = append(moves, seekReverse(board, loc)...)
-	moves = append(moves, seekLeft(board, loc)...)
-	moves = append(moves, seekRight(board, loc)...)
+	moves = append(moves, seekForward(board, loc, boardSize)...)
+	moves = append(moves, seekReverse(board, loc, boardSize)...)
+	moves = append(moves, seekLeft(board, loc, boardSize)...)
+	moves = append(moves, seekRight(board, loc, boardSize)...)
 	return moves
 }
 

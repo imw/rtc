@@ -8,7 +8,9 @@ import (
 const boardSize = 8
 
 type Board struct {
+	size    int
 	squares [boardSize][boardSize]Square
+	cursor  Cursor
 }
 
 type Color int
@@ -29,6 +31,7 @@ func invertColor(c Color) Color {
 //create and color squares
 func New() *Board {
 	b := new(Board)
+	b.size = boardSize
 	b.squares = [boardSize][boardSize]Square{}
 	for i := 0; i < boardSize; i++ {
 		color := Color(i % 2)
@@ -46,7 +49,21 @@ func New() *Board {
 		}
 	}
 	b.setup()
+	b.cursor = Cursor{
+		loc:   b.squares[2][6],
+		mode:  Insert,
+		color: White,
+	}
+
 	return b
+}
+
+func (b *Board) Moves() []Square {
+	return b.cursor.choices(*b)
+}
+
+func (b *Board) Loc() Square {
+	return b.cursor.loc
 }
 
 func (b *Board) Flatten() [boardSize * boardSize]Square {
@@ -96,4 +113,8 @@ func (b *Board) setup() {
 	b.position("F8").occupant = NewBishop(Black)
 	b.position("G8").occupant = NewKnight(Black)
 	b.position("H8").occupant = NewRook(Black)
+}
+
+func (b *Board) Size() int {
+	return b.size
 }
