@@ -8,9 +8,11 @@ import (
 const boardSize = 8
 
 type Board struct {
-	size    int
-	squares [boardSize][boardSize]Square
-	cursor  Cursor
+	size        int
+	squares     [boardSize][boardSize]Square
+	whiteCursor Cursor
+	blackCursor Cursor
+	toMove      Color
 }
 
 type Color int
@@ -49,21 +51,35 @@ func New() *Board {
 		}
 	}
 	b.setup()
-	b.cursor = Cursor{
+	b.whiteCursor = Cursor{
 		loc:   b.squares[2][6],
-		mode:  Insert,
+		mode:  Select,
 		color: White,
 	}
 
+	b.blackCursor = Cursor{
+		loc:   b.squares[2][6],
+		mode:  Select,
+		color: Black,
+	}
 	return b
 }
 
+func (b *Board) activeCursor() Cursor {
+	if b.toMove == White {
+		return b.whiteCursor
+	} else {
+		return b.blackCursor
+	}
+}
+
 func (b *Board) Moves() []Square {
-	return b.cursor.choices(*b)
+	c := b.activeCursor()
+	return c.choices(*b)
 }
 
 func (b *Board) Loc() Square {
-	return b.cursor.loc
+	return b.activeCursor().loc
 }
 
 func (b *Board) Flatten() [boardSize * boardSize]Square {
