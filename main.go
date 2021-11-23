@@ -40,7 +40,7 @@ func main() {
 				s.Fini()
 				os.Exit(0)
 			} else {
-				board.Update(ev)
+				b.Update(ev)
 				display.Render(b, s)
 			}
 		}

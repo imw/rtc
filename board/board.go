@@ -65,11 +65,11 @@ func New() *Board {
 	return b
 }
 
-func (b *Board) activeCursor() Cursor {
+func (b *Board) activeCursor() *Cursor {
 	if b.toMove == White {
-		return b.whiteCursor
+		return &b.whiteCursor
 	} else {
-		return b.blackCursor
+		return &b.blackCursor
 	}
 }
 

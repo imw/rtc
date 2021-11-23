@@ -13,6 +13,13 @@ type Cursor struct {
 	color Color
 }
 
+func (c *Cursor) switchMode() {
+	if c.mode == Select {
+		c.mode = Insert
+	}
+	c.mode = Select
+}
+
 //returns slice of legal squares - all occupied squares in select mode, all
 //legal moves in insert mode
 func (c *Cursor) choices(board Board) []Square {
