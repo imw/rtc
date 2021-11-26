@@ -36,15 +36,16 @@ func (p *Knight) Side() Color {
 
 func (p *Knight) ValidMoves(board Board, loc Square) []Square {
 	moves := []Square{}
+	moves = append(moves, loc)
 	motions := [8][2]int{{-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {1, 2}, {-1, 2}}
 	for _, motion := range motions {
 		targetx := loc.x + motion[0]
-		targety := loc.x + motion[1]
+		targety := loc.y + motion[1]
 
-		if targetx < 0 || targetx > boardSize {
+		if targetx < 0 || targetx >= boardSize {
 			continue
 		}
-		if targety < 0 || targety > boardSize {
+		if targety < 0 || targety >= boardSize {
 			continue
 		}
 

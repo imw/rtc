@@ -37,6 +37,7 @@ func (p *Pawn) Side() Color {
 
 func (p *Pawn) ValidMoves(board Board, loc Square) []Square {
 	moves := []Square{}
+	moves = append(moves, loc)
 
 	if p.moved == false {
 		moves = append(moves, seekForward(board, loc, 2)...)

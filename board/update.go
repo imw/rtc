@@ -1,7 +1,9 @@
 package board
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"sort"
 
 	"github.com/gdamore/tcell/v2"
@@ -34,6 +36,7 @@ const (
 )
 
 func (b *Board) Update(ev *tcell.EventKey) {
+	write(fmt.Sprintf("Active Cursor: %v", b.activeCursor()))
 	input := inputFromKeypress(ev)
 	if b.activeCursor().mode == Insert {
 		b.applyInsert(input)
@@ -45,7 +48,8 @@ func (b *Board) Update(ev *tcell.EventKey) {
 func (b *Board) applyInsert(i Input) {
 	switch i {
 	case Left, Right, Up, Down:
-		b.moveCursor(i)
+		b.moveReticle(i)
+		//b.moveCursor(i)
 	case In:
 		//move
 	case Out:
@@ -64,6 +68,37 @@ func (b *Board) applySelect(i Input) {
 	}
 }
 
+func (b *Board) moveReticle(i Input) {
+	var axis SortAxis
+	var dir SortDirection
+	if i == Left || i == Right {
+		axis = File
+	} else {
+		axis = Rank
+	}
+	if i == Left || i == Up {
+		dir = Reverse
+	} else {
+		dir = Forward
+	}
+	sortedSqs := sortSquares(b.Moves(), axis, dir)
+	write(fmt.Sprintf("Sorted Squares: %v", sortedSqs))
+	tgt := b.activeCursor().target
+	write(fmt.Sprintf("Target: %v", tgt))
+	var target Square
+	for i, sq := range sortedSqs {
+		if sq == tgt {
+			if i+1 != len(sortedSqs) {
+				target = sortedSqs[i+1]
+			} else {
+				target = sortedSqs[0]
+			}
+		}
+	}
+	write(fmt.Sprintf("moving %v to %v", tgt, target))
+	b.activeCursor().target = b.squares[target.x][target.y]
+}
+
 func (b *Board) moveCursor(i Input) {
 	var axis SortAxis
 	var dir SortDirection
@@ -78,7 +113,7 @@ func (b *Board) moveCursor(i Input) {
 		dir = Forward
 	}
 	sortedSqs := sortSquares(b.Moves(), axis, dir)
-	fmt.Println(sortedSqs)
+	write(fmt.Sprintf("Sorted squares: %v", sortedSqs))
 	loc := b.activeCursor().loc
 	var target Square
 	for i, sq := range sortedSqs {
@@ -90,6 +125,7 @@ func (b *Board) moveCursor(i Input) {
 			}
 		}
 	}
+	write(fmt.Sprintf("moving %v to %v", loc, target))
 	b.activeCursor().loc = b.squares[target.x][target.y]
 }
 
@@ -166,7 +202,6 @@ func inputFromKeypress(ev *tcell.EventKey) Input {
 	return action
 }
 
-/*
 func check(err error) {
 	if err != nil {
 		panic(err)
@@ -185,4 +220,3 @@ func write(str string) {
 	check(err)
 	w.Flush()
 }
-*/

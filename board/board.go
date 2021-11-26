@@ -78,6 +78,10 @@ func (b *Board) Moves() []Square {
 	return c.choices(*b)
 }
 
+func (b *Board) Target() Square {
+	return b.activeCursor().target
+}
+
 func (b *Board) Loc() Square {
 	return b.activeCursor().loc
 }

@@ -8,16 +8,20 @@ const (
 )
 
 type Cursor struct {
-	loc   Square
-	mode  CursorMode
-	color Color
+	loc    Square
+	target Square
+	mode   CursorMode
+	color  Color
 }
 
 func (c *Cursor) switchMode() {
 	if c.mode == Select {
 		c.mode = Insert
+		c.target = c.loc
+	} else {
+		c.mode = Select
+		c.target = Square{}
 	}
-	c.mode = Select
 }
 
 //returns slice of legal squares - all occupied squares in select mode, all
@@ -34,7 +38,6 @@ func (c *Cursor) choices(board Board) []Square {
 		}
 		return sqs
 	}
-
 	return c.loc.Occupant().ValidMoves(board, c.loc)
 }
 
@@ -46,10 +49,10 @@ func search(xmotion binop, ymotion binop, board Board, loc Square, limit int) []
 	for i := 1; i <= limit; i++ {
 		targetx := xmotion(x, i)
 		targety := ymotion(y, i)
-		if targetx > boardSize || targetx < 0 {
+		if targetx >= boardSize || targetx < 0 {
 			break
 		}
-		if targety > boardSize || targety < 0 {
+		if targety >= boardSize || targety < 0 {
 			break
 		}
 		target := board.squares[xmotion(x, i)][ymotion(y, i)]

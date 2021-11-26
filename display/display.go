@@ -78,7 +78,8 @@ func Render(b *board.Board, s tcell.Screen) {
 	style := tcell.StyleDefault
 	sqs := b.Flatten()
 	loc := b.Loc()
-	targets := b.Moves()
+	moves := b.Moves()
+	target := b.Target()
 	for _, sq := range sqs {
 		piece := sq.Occupant()
 		var symbol string
@@ -97,12 +98,16 @@ func Render(b *board.Board, s tcell.Screen) {
 			style = style.Background(tcell.ColorBlack)
 		}
 
-		if util.ItemExists(targets, sq) {
+		if util.ItemExists(moves, sq) {
 			style = style.Background(tcell.ColorLightYellow)
 		}
 
 		if sq == loc {
 			style = style.Background(tcell.ColorLightBlue)
+		}
+
+		if sq == target {
+			style = style.Background(tcell.ColorLightPink)
 		}
 
 		x, y := sq.Indices()
