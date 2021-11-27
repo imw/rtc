@@ -43,6 +43,7 @@ func (p *Bishop) ValidMoves(board Board, loc Square) []Square {
 	return moves
 }
 
-//NOOP
-func (p *Bishop) Move() {
+func (p *Bishop) Move(from, to Square) {
+	from.occupant = nil
+	to.occupant = p
 }

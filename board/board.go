@@ -38,7 +38,7 @@ func New() *Board {
 	for i := 0; i < boardSize; i++ {
 		color := Color(i % 2)
 		for j := 0; j < boardSize; j++ {
-			name := string('A'+i) + strconv.Itoa(j+1)
+			name := string('A'+i) + strconv.Itoa(boardSize-j)
 			color = invertColor(color)
 			s := Square{
 				x:        i,
@@ -52,13 +52,13 @@ func New() *Board {
 	}
 	b.setup()
 	b.whiteCursor = Cursor{
-		loc:   b.squares[2][6],
+		loc:   b.squares[4][6],
 		mode:  Select,
 		color: White,
 	}
 
 	b.blackCursor = Cursor{
-		loc:   b.squares[2][6],
+		loc:   b.squares[4][1],
 		mode:  Select,
 		color: Black,
 	}
@@ -70,6 +70,14 @@ func (b *Board) activeCursor() *Cursor {
 		return &b.whiteCursor
 	} else {
 		return &b.blackCursor
+	}
+}
+
+func (b *Board) switchCursor() {
+	if b.toMove == White {
+		b.toMove = Black
+	} else {
+		b.toMove = White
 	}
 }
 

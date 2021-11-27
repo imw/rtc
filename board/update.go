@@ -49,9 +49,11 @@ func (b *Board) applyInsert(i Input) {
 	switch i {
 	case Left, Right, Up, Down:
 		b.moveReticle(i)
-		//b.moveCursor(i)
 	case In:
-		//move
+		b.move(i)
+		b.activeCursor().switchMode()
+		b.switchCursor()
+		write(fmt.Sprintf("board: %v", b))
 	case Out:
 		b.activeCursor().switchMode()
 	}
@@ -68,7 +70,25 @@ func (b *Board) applySelect(i Input) {
 	}
 }
 
+func (b *Board) move(i Input) {
+	write("move\n")
+	loc := b.activeCursor().loc
+	tgt := b.activeCursor().target
+	write(fmt.Sprintf("moving %v to %v", loc, tgt))
+	p := loc.occupant
+	write(fmt.Sprintf("address of p: %v", &p))
+	loc.occupant = nil
+	tgt.occupant = p
+	write(fmt.Sprintf("after move: %v to %v", loc, tgt))
+	b.squares[loc.x][loc.y].occupant = nil
+	b.squares[tgt.x][tgt.y].occupant = p
+	b.activeCursor().loc = tgt
+	b.activeCursor().target = Square{}
+	//	loc.occupant.Move(loc, tgt)
+}
+
 func (b *Board) moveReticle(i Input) {
+	write("move reticle\n")
 	var axis SortAxis
 	var dir SortDirection
 	if i == Left || i == Right {
@@ -100,6 +120,7 @@ func (b *Board) moveReticle(i Input) {
 }
 
 func (b *Board) moveCursor(i Input) {
+	write("move cursor\n")
 	var axis SortAxis
 	var dir SortDirection
 	if i == Left || i == Right {

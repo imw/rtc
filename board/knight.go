@@ -63,4 +63,7 @@ func (p *Knight) ValidMoves(board Board, loc Square) []Square {
 }
 
 //NOOP
-func (p *Knight) Move() {}
+func (p *Knight) Move(from, to Square) {
+	from.occupant = nil
+	to.occupant = p
+}
