@@ -80,7 +80,8 @@ func Render(b *board.Board, s tcell.Screen) {
 	loc := b.Loc()
 	moves := b.Moves()
 	target := b.Target()
-	for _, sq := range sqs {
+	for _, sqp := range sqs {
+		sq := *sqp
 		piece := sq.Occupant()
 		var symbol string
 		if piece != nil {

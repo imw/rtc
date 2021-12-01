@@ -79,12 +79,12 @@ func (b *Board) move(i Input) {
 	write(fmt.Sprintf("address of p: %v", &p))
 	loc.occupant = nil
 	tgt.occupant = p
+	p.Move()
 	write(fmt.Sprintf("after move: %v to %v", loc, tgt))
 	b.squares[loc.x][loc.y].occupant = nil
 	b.squares[tgt.x][tgt.y].occupant = p
 	b.activeCursor().loc = tgt
-	b.activeCursor().target = Square{}
-	//	loc.occupant.Move(loc, tgt)
+	b.activeCursor().target = tgt
 }
 
 func (b *Board) moveReticle(i Input) {

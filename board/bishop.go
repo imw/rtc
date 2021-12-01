@@ -43,7 +43,4 @@ func (p *Bishop) ValidMoves(board Board, loc Square) []Square {
 	return moves
 }
 
-func (p *Bishop) Move(from, to Square) {
-	from.occupant = nil
-	to.occupant = p
-}
+func (p *Bishop) Move() {}

@@ -6,7 +6,7 @@ type Piece interface {
 	Unicode() string
 	Side() Color
 	ValidMoves(Board, Square) []Square
-	Move(Square, Square)
+	Move()
 	//	Stats()
 }
 

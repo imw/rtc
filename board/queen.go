@@ -47,7 +47,4 @@ func (p *Queen) ValidMoves(board Board, loc Square) []Square {
 	return moves
 }
 
-func (p *Queen) Move(from, to Square) {
-	from.occupant = nil
-	to.occupant = p
-}
+func (p *Queen) Move() {}

@@ -79,6 +79,16 @@ func (b *Board) switchCursor() {
 	} else {
 		b.toMove = White
 	}
+	if b.activeCursor().loc.Occupied() == false {
+		for _, sq := range b.Flatten() {
+			if sq.Occupied() {
+				if sq.Occupant().Side() == b.activeCursor().color {
+					b.activeCursor().loc = *sq
+					break
+				}
+			}
+		}
+	}
 }
 
 func (b *Board) Moves() []Square {
@@ -94,12 +104,12 @@ func (b *Board) Loc() Square {
 	return b.activeCursor().loc
 }
 
-func (b *Board) Flatten() [boardSize * boardSize]Square {
-	sqs := [boardSize * boardSize]Square{}
+func (b *Board) Flatten() [boardSize * boardSize]*Square {
+	sqs := [boardSize * boardSize]*Square{}
 	k := 0
 	for i := 0; i < boardSize; i++ {
 		for j := 0; j < boardSize; j++ {
-			sqs[k] = b.squares[i][j]
+			sqs[k] = &b.squares[i][j]
 			k++
 		}
 	}
