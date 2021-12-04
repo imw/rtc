@@ -34,7 +34,7 @@ func (p *Bishop) Side() Color {
 	return p.core.side
 }
 
-func (p *Bishop) ValidMoves(board Board, loc Square) []Square {
+func (p *Bishop) ValidMoves(board Board, loc *Square) []Square {
 	moves := []Square{}
 	moves = append(moves, seekForwardL(board, loc, boardSize)...)
 	moves = append(moves, seekForwardR(board, loc, boardSize)...)

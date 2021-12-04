@@ -52,13 +52,13 @@ func New() *Board {
 	}
 	b.setup()
 	b.whiteCursor = Cursor{
-		loc:   b.squares[4][6],
+		loc:   &b.squares[4][6],
 		mode:  Select,
 		color: White,
 	}
 
 	b.blackCursor = Cursor{
-		loc:   b.squares[4][1],
+		loc:   &b.squares[4][1],
 		mode:  Select,
 		color: Black,
 	}
@@ -79,11 +79,12 @@ func (b *Board) switchCursor() {
 	} else {
 		b.toMove = White
 	}
-	if b.activeCursor().loc.Occupied() == false {
+	loc := b.Loc()
+	if !loc.Occupied() || loc.Occupant().Side() != b.toMove {
 		for _, sq := range b.Flatten() {
 			if sq.Occupied() {
 				if sq.Occupant().Side() == b.activeCursor().color {
-					b.activeCursor().loc = *sq
+					b.activeCursor().loc = sq
 					break
 				}
 			}
@@ -96,11 +97,11 @@ func (b *Board) Moves() []Square {
 	return c.choices(*b)
 }
 
-func (b *Board) Target() Square {
+func (b *Board) Target() *Square {
 	return b.activeCursor().target
 }
 
-func (b *Board) Loc() Square {
+func (b *Board) Loc() *Square {
 	return b.activeCursor().loc
 }
 

@@ -70,6 +70,7 @@ func (b *Board) applySelect(i Input) {
 	}
 }
 
+//TODO WTF
 func (b *Board) move(i Input) {
 	write("move\n")
 	loc := b.activeCursor().loc
@@ -105,18 +106,18 @@ func (b *Board) moveReticle(i Input) {
 	write(fmt.Sprintf("Sorted Squares: %v", sortedSqs))
 	tgt := b.activeCursor().target
 	write(fmt.Sprintf("Target: %v", tgt))
-	var target Square
+	var target *Square
 	for i, sq := range sortedSqs {
-		if sq == tgt {
+		if sq == *tgt {
 			if i+1 != len(sortedSqs) {
-				target = sortedSqs[i+1]
+				target = &sortedSqs[i+1]
 			} else {
-				target = sortedSqs[0]
+				target = &sortedSqs[0]
 			}
 		}
 	}
 	write(fmt.Sprintf("moving %v to %v", tgt, target))
-	b.activeCursor().target = b.squares[target.x][target.y]
+	b.activeCursor().target = &b.squares[target.x][target.y]
 }
 
 func (b *Board) moveCursor(i Input) {
@@ -136,18 +137,18 @@ func (b *Board) moveCursor(i Input) {
 	sortedSqs := sortSquares(b.Moves(), axis, dir)
 	write(fmt.Sprintf("Sorted squares: %v", sortedSqs))
 	loc := b.activeCursor().loc
-	var target Square
+	var target *Square
 	for i, sq := range sortedSqs {
-		if sq == loc {
+		if sq == *loc {
 			if i+1 != len(sortedSqs) {
-				target = sortedSqs[i+1]
+				target = &sortedSqs[i+1]
 			} else {
-				target = sortedSqs[0]
+				target = &sortedSqs[0]
 			}
 		}
 	}
 	write(fmt.Sprintf("moving %v to %v", loc, target))
-	b.activeCursor().loc = b.squares[target.x][target.y]
+	b.activeCursor().loc = &b.squares[target.x][target.y]
 }
 
 func sortSquares(sqs []Square, axis SortAxis, dir SortDirection) []Square {

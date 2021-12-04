@@ -36,7 +36,7 @@ func (p *Rook) Side() Color {
 }
 
 //TODO: Castling
-func (p *Rook) ValidMoves(board Board, loc Square) []Square {
+func (p *Rook) ValidMoves(board Board, loc *Square) []Square {
 	moves := []Square{}
 	moves = append(moves, seekForward(board, loc, boardSize)...)
 	moves = append(moves, seekReverse(board, loc, boardSize)...)

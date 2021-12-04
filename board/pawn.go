@@ -35,9 +35,9 @@ func (p *Pawn) Side() Color {
 	return p.core.side
 }
 
-func (p *Pawn) ValidMoves(board Board, loc Square) []Square {
+func (p *Pawn) ValidMoves(board Board, loc *Square) []Square {
 	moves := []Square{}
-	moves = append(moves, loc)
+	moves = append(moves, *loc)
 	moves = append(moves, p.attackMoves(board, loc)...)
 	if p.core.side == White {
 
@@ -59,7 +59,7 @@ func (p *Pawn) ValidMoves(board Board, loc Square) []Square {
 
 }
 
-func (p *Pawn) attackMoves(board Board, loc Square) []Square {
+func (p *Pawn) attackMoves(board Board, loc *Square) []Square {
 	var yop binop
 	if p.core.side == White {
 		yop = sub

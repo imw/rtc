@@ -34,9 +34,9 @@ func (p *Knight) Side() Color {
 	return p.core.side
 }
 
-func (p *Knight) ValidMoves(board Board, loc Square) []Square {
+func (p *Knight) ValidMoves(board Board, loc *Square) []Square {
 	moves := []Square{}
-	moves = append(moves, loc)
+	moves = append(moves, *loc)
 	motions := [8][2]int{{-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {1, 2}, {-1, 2}}
 	for _, motion := range motions {
 		targetx := loc.x + motion[0]

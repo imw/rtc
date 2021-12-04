@@ -8,8 +8,8 @@ const (
 )
 
 type Cursor struct {
-	loc    Square
-	target Square
+	loc    *Square
+	target *Square
 	mode   CursorMode
 	color  Color
 }
@@ -20,7 +20,7 @@ func (c *Cursor) switchMode() {
 		c.target = c.loc
 	} else {
 		c.mode = Select
-		c.target = Square{}
+		c.target = nil
 	}
 }
 
@@ -41,8 +41,9 @@ func (c *Cursor) choices(board Board) []Square {
 	return c.loc.Occupant().ValidMoves(board, c.loc)
 }
 
-func search(xmotion binop, ymotion binop, board Board, loc Square, limit int) []Square {
+func search(xmotion binop, ymotion binop, board Board, loc *Square, limit int) []Square {
 	moves := []Square{}
+	moves = append(moves, *loc)
 	x := loc.x
 	y := loc.y
 	p := loc.occupant
@@ -68,35 +69,35 @@ func search(xmotion binop, ymotion binop, board Board, loc Square, limit int) []
 	return moves
 }
 
-func seekForward(board Board, loc Square, limit int) []Square {
+func seekForward(board Board, loc *Square, limit int) []Square {
 	return search(id, sub, board, loc, limit)
 }
 
-func seekReverse(board Board, loc Square, limit int) []Square {
+func seekReverse(board Board, loc *Square, limit int) []Square {
 	return search(id, add, board, loc, limit)
 }
 
-func seekLeft(board Board, loc Square, limit int) []Square {
+func seekLeft(board Board, loc *Square, limit int) []Square {
 	return search(sub, id, board, loc, limit)
 }
 
-func seekRight(board Board, loc Square, limit int) []Square {
+func seekRight(board Board, loc *Square, limit int) []Square {
 	return search(add, id, board, loc, limit)
 }
 
-func seekForwardL(board Board, loc Square, limit int) []Square {
+func seekForwardL(board Board, loc *Square, limit int) []Square {
 	return search(sub, add, board, loc, limit)
 }
 
-func seekForwardR(board Board, loc Square, limit int) []Square {
+func seekForwardR(board Board, loc *Square, limit int) []Square {
 	return search(add, add, board, loc, limit)
 }
 
-func seekReverseL(board Board, loc Square, limit int) []Square {
+func seekReverseL(board Board, loc *Square, limit int) []Square {
 	return search(sub, sub, board, loc, limit)
 }
 
-func seekReverseR(board Board, loc Square, limit int) []Square {
+func seekReverseR(board Board, loc *Square, limit int) []Square {
 	return search(add, sub, board, loc, limit)
 }
 

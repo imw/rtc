@@ -34,7 +34,7 @@ func (p *Queen) Side() Color {
 	return p.core.side
 }
 
-func (p *Queen) ValidMoves(board Board, loc Square) []Square {
+func (p *Queen) ValidMoves(board Board, loc *Square) []Square {
 	moves := []Square{}
 	moves = append(moves, seekForward(board, loc, boardSize)...)
 	moves = append(moves, seekReverse(board, loc, boardSize)...)
