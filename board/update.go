@@ -1,11 +1,10 @@
 package board
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"sort"
 
+	"0x539.lol/rtc/util"
 	"github.com/gdamore/tcell/v2"
 )
 
@@ -36,7 +35,7 @@ const (
 )
 
 func (b *Board) Update(ev *tcell.EventKey) {
-	write(fmt.Sprintf("Active Cursor: %v", b.activeCursor()))
+	util.Write(fmt.Sprintf("Active Cursor: %v", b.activeCursor()))
 	input := inputFromKeypress(ev)
 	if b.activeCursor().mode == Insert {
 		b.applyInsert(input)
@@ -53,7 +52,7 @@ func (b *Board) applyInsert(i Input) {
 		b.move(i)
 		b.activeCursor().switchMode()
 		b.switchCursor()
-		write(fmt.Sprintf("board: %v", b))
+		util.Write(fmt.Sprintf("board: %v", b))
 	case Out:
 		b.activeCursor().switchMode()
 	}
@@ -70,26 +69,21 @@ func (b *Board) applySelect(i Input) {
 	}
 }
 
-//TODO WTF
 func (b *Board) move(i Input) {
-	write("move\n")
+	util.Write("move\n")
 	loc := b.activeCursor().loc
 	tgt := b.activeCursor().target
-	write(fmt.Sprintf("moving %v to %v", loc, tgt))
+	util.Write(fmt.Sprintf("moving %v to %v", loc, tgt))
 	p := loc.occupant
-	write(fmt.Sprintf("address of p: %v", &p))
+	util.Write(fmt.Sprintf("address of p: %v", &p))
 	loc.occupant = nil
 	tgt.occupant = p
 	p.Move()
-	write(fmt.Sprintf("after move: %v to %v", loc, tgt))
-	b.squares[loc.x][loc.y].occupant = nil
-	b.squares[tgt.x][tgt.y].occupant = p
-	b.activeCursor().loc = tgt
-	b.activeCursor().target = tgt
+	util.Write(fmt.Sprintf("after move: %v to %v", loc, tgt))
 }
 
 func (b *Board) moveReticle(i Input) {
-	write("move reticle\n")
+	util.Write("move reticle\n")
 	var axis SortAxis
 	var dir SortDirection
 	if i == Left || i == Right {
@@ -103,9 +97,9 @@ func (b *Board) moveReticle(i Input) {
 		dir = Forward
 	}
 	sortedSqs := sortSquares(b.Moves(), axis, dir)
-	write(fmt.Sprintf("Sorted Squares: %v", sortedSqs))
+	util.Write(fmt.Sprintf("Sorted Squares: %v", sortedSqs))
 	tgt := b.activeCursor().target
-	write(fmt.Sprintf("Target: %v", tgt))
+	util.Write(fmt.Sprintf("Target: %v", tgt))
 	var target *Square
 	for i, sq := range sortedSqs {
 		if sq == *tgt {
@@ -116,12 +110,12 @@ func (b *Board) moveReticle(i Input) {
 			}
 		}
 	}
-	write(fmt.Sprintf("moving %v to %v", tgt, target))
+	util.Write(fmt.Sprintf("moving %v to %v", tgt, target))
 	b.activeCursor().target = &b.squares[target.x][target.y]
 }
 
 func (b *Board) moveCursor(i Input) {
-	write("move cursor\n")
+	util.Write("move cursor\n")
 	var axis SortAxis
 	var dir SortDirection
 	if i == Left || i == Right {
@@ -135,7 +129,7 @@ func (b *Board) moveCursor(i Input) {
 		dir = Forward
 	}
 	sortedSqs := sortSquares(b.Moves(), axis, dir)
-	write(fmt.Sprintf("Sorted squares: %v", sortedSqs))
+	util.Write(fmt.Sprintf("Sorted squares: %v", sortedSqs))
 	loc := b.activeCursor().loc
 	var target *Square
 	for i, sq := range sortedSqs {
@@ -147,7 +141,7 @@ func (b *Board) moveCursor(i Input) {
 			}
 		}
 	}
-	write(fmt.Sprintf("moving %v to %v", loc, target))
+	util.Write(fmt.Sprintf("moving %v to %v", loc, target))
 	b.activeCursor().loc = &b.squares[target.x][target.y]
 }
 
@@ -222,23 +216,4 @@ func inputFromKeypress(ev *tcell.EventKey) Input {
 		action = In
 	}
 	return action
-}
-
-func check(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-func write(str string) {
-	log := "/home/imw/src/rtc/log.txt"
-	var f *os.File
-	f, err := os.OpenFile(log, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	check(err)
-	defer f.Close()
-
-	w := bufio.NewWriter(f)
-	_, err = fmt.Fprintf(w, "%s\n", str)
-	check(err)
-	w.Flush()
 }
