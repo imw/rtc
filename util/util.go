@@ -30,7 +30,7 @@ func Check(err error) {
 }
 
 func Write(str string) {
-	log := "/home/imw/src/rtc/log.txt"
+	log := "log.txt"
 	var f *os.File
 	f, err := os.OpenFile(log, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	Check(err)

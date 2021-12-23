@@ -34,31 +34,33 @@ const (
 	Reverse
 )
 
-func (b *Board) Update(ev *tcell.EventKey) {
+func (b *Board) ProcessEvent(ev *tcell.EventKey) Move {
 	util.Write(fmt.Sprintf("Active Cursor: %v", b.activeCursor()))
 	input := inputFromKeypress(ev)
 	if b.activeCursor().mode == Insert {
-		b.applyInsert(input)
+		return b.applyInsert(input)
 	} else {
-		b.applySelect(input)
+		return b.applySelect(input)
 	}
 }
 
-func (b *Board) applyInsert(i Input) {
+func (b *Board) applyInsert(i Input) Move {
+	var move Move
 	switch i {
 	case Left, Right, Up, Down:
 		b.moveReticle(i)
 	case In:
-		b.move(i)
+		move = b.move()
 		b.activeCursor().switchMode()
-		b.switchCursor()
+		b.resetCursor()
 		util.Write(fmt.Sprintf("board: %v", b))
 	case Out:
 		b.activeCursor().switchMode()
 	}
+	return move
 }
 
-func (b *Board) applySelect(i Input) {
+func (b *Board) applySelect(i Input) Move {
 	switch i {
 	case Left, Right, Up, Down:
 		b.moveCursor(i)
@@ -67,19 +69,42 @@ func (b *Board) applySelect(i Input) {
 	case Out:
 		break
 	}
+	return Move{}
 }
 
-func (b *Board) move(i Input) {
+//move struct w/ loc,target,seq,timestamp?
+
+type Move struct {
+	Loc string
+	Tgt string
+	Seq int
+	//	time    time.Time
+}
+
+/*
+func (m *Move) Seq() int {
+	return m.seq
+}
+
+func (m *Move) Loc() string {
+	return m.loc
+}
+
+func (m *Move) Tgt() string {
+	return m.tgt
+}
+*/
+
+func (b *Board) move() Move {
 	util.Write("move\n")
-	loc := b.activeCursor().loc
-	tgt := b.activeCursor().target
-	util.Write(fmt.Sprintf("moving %v to %v", loc, tgt))
-	p := loc.occupant
-	util.Write(fmt.Sprintf("address of p: %v", &p))
-	loc.occupant = nil
-	tgt.occupant = p
-	p.Move()
-	util.Write(fmt.Sprintf("after move: %v to %v", loc, tgt))
+	loc := b.activeCursor().loc.Name()
+	tgt := b.activeCursor().target.Name()
+	move := Move{
+		Loc: loc,
+		Tgt: tgt,
+		Seq: 1,
+	}
+	return move
 }
 
 func (b *Board) moveReticle(i Input) {
@@ -130,6 +155,7 @@ func (b *Board) moveCursor(i Input) {
 	}
 	sortedSqs := sortSquares(b.Moves(), axis, dir)
 	util.Write(fmt.Sprintf("Sorted squares: %v", sortedSqs))
+	util.Write(fmt.Sprintf("Active cursor: %v", b.activeCursor()))
 	loc := b.activeCursor().loc
 	var target *Square
 	for i, sq := range sortedSqs {

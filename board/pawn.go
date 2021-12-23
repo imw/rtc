@@ -39,13 +39,12 @@ func (p *Pawn) ValidMoves(board Board, loc *Square) []Square {
 	moves := []Square{}
 	moves = append(moves, *loc)
 	moves = append(moves, p.attackMoves(board, loc)...)
+	//TODO only append these if not occupied by opponent
 	if p.core.side == White {
-
 		if p.moved == false {
 			moves = append(moves, seekForward(board, loc, 2)...)
 		}
 		moves = append(moves, seekForward(board, loc, 1)...)
-
 	} else {
 
 		if p.moved == false {

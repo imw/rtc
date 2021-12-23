@@ -3,6 +3,8 @@ package board
 import (
 	"fmt"
 	"strconv"
+
+	"0x539.lol/rtc/util"
 )
 
 const boardSize = 8
@@ -31,7 +33,7 @@ func invertColor(c Color) Color {
 }
 
 //create and color squares
-func New() *Board {
+func New(c Color) *Board {
 	b := new(Board)
 	b.size = boardSize
 	b.squares = [boardSize][boardSize]Square{}
@@ -62,6 +64,7 @@ func New() *Board {
 		mode:  Select,
 		color: Black,
 	}
+	b.toMove = c
 	return b
 }
 
@@ -79,8 +82,15 @@ func (b *Board) switchCursor() {
 	} else {
 		b.toMove = White
 	}
+	b.resetCursor()
+}
+
+func (b *Board) resetCursor() {
+	util.Write("resetting cursor")
 	loc := b.Loc()
+	util.Write(fmt.Sprintf("cursor loc: %v", loc))
 	if !loc.Occupied() || loc.Occupant().Side() != b.toMove {
+		util.Write("needs adjustment")
 		for _, sq := range b.Flatten() {
 			if sq.Occupied() {
 				if sq.Occupant().Side() == b.activeCursor().color {
@@ -105,6 +115,14 @@ func (b *Board) Loc() *Square {
 	return b.activeCursor().loc
 }
 
+func (b *Board) SetLoc(s *Square) {
+	b.activeCursor().loc = s
+}
+
+func (b *Board) Side() Color {
+	return b.activeCursor().color
+}
+
 func (b *Board) Flatten() [boardSize * boardSize]*Square {
 	sqs := [boardSize * boardSize]*Square{}
 	k := 0
@@ -118,7 +136,7 @@ func (b *Board) Flatten() [boardSize * boardSize]*Square {
 }
 
 //decode file rune to i, convert rank to j and invert
-func (b *Board) position(name string) *Square {
+func (b *Board) Position(name string) *Square {
 	file := name[0]
 	fileidx := file - 'A'
 	ranktable := [8]int{7, 6, 5, 4, 3, 2, 1, 0}
@@ -128,30 +146,30 @@ func (b *Board) position(name string) *Square {
 }
 
 func (b *Board) setup() {
-	b.position("A1").occupant = NewRook(White)
-	b.position("B1").occupant = NewKnight(White)
-	b.position("C1").occupant = NewBishop(White)
-	b.position("D1").occupant = NewQueen(White)
-	b.position("E1").occupant = NewKing(White)
-	b.position("F1").occupant = NewBishop(White)
-	b.position("G1").occupant = NewKnight(White)
-	b.position("H1").occupant = NewRook(White)
+	b.Position("A1").occupant = NewRook(White)
+	b.Position("B1").occupant = NewKnight(White)
+	b.Position("C1").occupant = NewBishop(White)
+	b.Position("D1").occupant = NewQueen(White)
+	b.Position("E1").occupant = NewKing(White)
+	b.Position("F1").occupant = NewBishop(White)
+	b.Position("G1").occupant = NewKnight(White)
+	b.Position("H1").occupant = NewRook(White)
 	files := "ABCDEFGH"
 	for _, k := range files {
-		b.position(fmt.Sprintf("%s%s", string(k), "2")).occupant = NewPawn(White)
+		b.Position(fmt.Sprintf("%s%s", string(k), "2")).occupant = NewPawn(White)
 	}
 
 	for _, k := range files {
-		b.position(fmt.Sprintf("%s%s", string(k), "7")).occupant = NewPawn(Black)
+		b.Position(fmt.Sprintf("%s%s", string(k), "7")).occupant = NewPawn(Black)
 	}
-	b.position("A8").occupant = NewRook(Black)
-	b.position("B8").occupant = NewKnight(Black)
-	b.position("C8").occupant = NewBishop(Black)
-	b.position("D8").occupant = NewKing(Black)
-	b.position("E8").occupant = NewQueen(Black)
-	b.position("F8").occupant = NewBishop(Black)
-	b.position("G8").occupant = NewKnight(Black)
-	b.position("H8").occupant = NewRook(Black)
+	b.Position("A8").occupant = NewRook(Black)
+	b.Position("B8").occupant = NewKnight(Black)
+	b.Position("C8").occupant = NewBishop(Black)
+	b.Position("D8").occupant = NewKing(Black)
+	b.Position("E8").occupant = NewQueen(Black)
+	b.Position("F8").occupant = NewBishop(Black)
+	b.Position("G8").occupant = NewKnight(Black)
+	b.Position("H8").occupant = NewRook(Black)
 }
 
 func (b *Board) Size() int {
