@@ -68,6 +68,8 @@ func main() {
 	defer l.Close()
 	util.Write(fmt.Sprintf("Listening with listener: %v", l))
 
+	//TODO loading/waiting screen
+
 	dialCount := 1
 	for {
 		//init client for peer
@@ -78,9 +80,6 @@ func main() {
 			time.Sleep(time.Duration(dialCount) * time.Second)
 		} else {
 			g.SetClient(client)
-			//registerCode := 1
-			//client.Call("GameRPC.Register", c.ID, &registerCode)
-
 			break
 		}
 		dialCount = dialCount + 1
@@ -103,6 +102,12 @@ func main() {
 	s.SetStyle(defStyle)
 
 	display.Greeting(s)
+	go func(b *board.Board, s tcell.Screen) {
+		t := time.NewTicker(10 * time.Millisecond)
+		for range t.C {
+			display.Render(b, s)
+		}
+	}(b, s)
 
 	//TODO something in board needs to send from channel
 	for {
