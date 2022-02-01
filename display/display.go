@@ -16,6 +16,16 @@ const (
 	squareWidth  = 2
 )
 
+func Loading(s tcell.Screen) {
+	w, h := s.Size()
+	s.Clear()
+	style := tcell.StyleDefault.Foreground(tcell.ColorCadetBlue.TrueColor()).Background(tcell.ColorWhite)
+	drawText(s, w/2-8, h/2, w/2+8, h/2, style, "REAL TIME CHESS")
+	drawText(s, w/2-10, h/2+1, w/2+10, h/2+1, tcell.StyleDefault, "Waiting for peer...")
+	drawText(s, w/2-9, h/2+2, w/2+9, h/2+2, tcell.StyleDefault, "Press ESC to exit.")
+	s.Show()
+}
+
 func Greeting(s tcell.Screen) {
 	w, h := s.Size()
 	s.Clear()

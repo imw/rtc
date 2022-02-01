@@ -70,21 +70,6 @@ func main() {
 
 	//TODO loading/waiting screen
 
-	dialCount := 1
-	for {
-		//init client for peer
-		util.Write(fmt.Sprintf("Dial #%d", dialCount))
-		client, err := rpc.DialHTTP("tcp", remotehost+":"+remoteport)
-		if err != nil {
-			util.Write(fmt.Sprintf("error attempting to dial %s:%s: %s", remotehost, remoteport, err))
-			time.Sleep(time.Duration(dialCount) * time.Second)
-		} else {
-			g.SetClient(client)
-			break
-		}
-		dialCount = dialCount + 1
-	}
-
 	//setup display
 	encoding.Register()
 	s, e := tcell.NewScreen()
@@ -100,6 +85,30 @@ func main() {
 		Background(tcell.ColorBlack).
 		Foreground(tcell.ColorWhite)
 	s.SetStyle(defStyle)
+
+	display.Loading(s)
+
+	dialCount := 1
+	for {
+		//init client for peer
+		util.Write(fmt.Sprintf("Dial #%d", dialCount))
+		client, err := rpc.DialHTTP("tcp", remotehost+":"+remoteport)
+		if err != nil {
+			util.Write(fmt.Sprintf("error attempting to dial %s:%s: %s", remotehost, remoteport, err))
+			time.Sleep(time.Duration(dialCount) * time.Second)
+		} else {
+			g.SetClient(client)
+			break
+		}
+		dialCount = dialCount + 1
+		switch ev := s.PollEvent().(type) {
+		case *tcell.EventKey:
+			if ev.Key() == tcell.KeyEscape {
+				s.Fini()
+				os.Exit(0)
+			}
+		}
+	}
 
 	display.Greeting(s)
 	go func(b *board.Board, s tcell.Screen) {
