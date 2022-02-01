@@ -158,8 +158,10 @@ func (b *Board) moveCursor(i Input) {
 	util.Write(fmt.Sprintf("Active cursor: %v", b.activeCursor()))
 	loc := b.activeCursor().loc
 	var target *Square
+	present := false
 	for i, sq := range sortedSqs {
 		if sq == *loc {
+			present = true
 			if i+1 != len(sortedSqs) {
 				target = &sortedSqs[i+1]
 			} else {
@@ -167,8 +169,14 @@ func (b *Board) moveCursor(i Input) {
 			}
 		}
 	}
-	util.Write(fmt.Sprintf("moving %v to %v", loc, target))
-	b.activeCursor().loc = &b.squares[target.x][target.y]
+	if present {
+		util.Write(fmt.Sprintf("moving %v to %v", loc, target))
+		b.activeCursor().loc = &b.squares[target.x][target.y]
+	} else {
+		target = &sortedSqs[0]
+		util.Write(fmt.Sprintf("loc not in squares, moving to %v", target))
+		b.activeCursor().loc = &b.squares[target.x][target.y]
+	}
 }
 
 func sortSquares(sqs []Square, axis SortAxis, dir SortDirection) []Square {
