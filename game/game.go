@@ -48,9 +48,7 @@ func (g *Game) Peered() bool {
 }
 
 func (gr *GameRPC) DoMove(m board.Move, exit *int) error {
-	//TODO check seq number and throw
 	util.Write(fmt.Sprintf("Local move: %v", m))
-	//	util.Write(fmt.Sprintf("Board: %v", gr.game.board))
 	loc := gr.game.board.Position(m.Loc)
 	tgt := gr.game.board.Position(m.Tgt)
 	util.Write(fmt.Sprintf("moving %v to %v", loc, tgt))

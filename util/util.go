@@ -30,14 +30,16 @@ func Check(err error) {
 }
 
 func Write(str string) {
-	log := "log.txt"
-	var f *os.File
-	f, err := os.OpenFile(log, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	Check(err)
-	defer f.Close()
+	if Debug {
+		log := "log.txt"
+		var f *os.File
+		f, err := os.OpenFile(log, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		Check(err)
+		defer f.Close()
 
-	w := bufio.NewWriter(f)
-	_, err = fmt.Fprintf(w, "%s\n", str)
-	Check(err)
-	w.Flush()
+		w := bufio.NewWriter(f)
+		_, err = fmt.Fprintf(w, "%s\n", str)
+		Check(err)
+		w.Flush()
+	}
 }

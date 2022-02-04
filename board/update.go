@@ -34,6 +34,12 @@ const (
 	Reverse
 )
 
+type Move struct {
+	Loc string
+	Tgt string
+	Seq int
+}
+
 func (b *Board) ProcessEvent(ev *tcell.EventKey) Move {
 	util.Write(fmt.Sprintf("Active Cursor: %v", b.activeCursor()))
 	input := inputFromKeypress(ev)
@@ -71,29 +77,6 @@ func (b *Board) applySelect(i Input) Move {
 	}
 	return Move{}
 }
-
-//move struct w/ loc,target,seq,timestamp?
-
-type Move struct {
-	Loc string
-	Tgt string
-	Seq int
-	//	time    time.Time
-}
-
-/*
-func (m *Move) Seq() int {
-	return m.seq
-}
-
-func (m *Move) Loc() string {
-	return m.loc
-}
-
-func (m *Move) Tgt() string {
-	return m.tgt
-}
-*/
 
 func (b *Board) move() Move {
 	util.Write("move\n")

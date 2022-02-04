@@ -7,7 +7,6 @@ type Piece interface {
 	Side() Color
 	ValidMoves(Board, *Square) []Square
 	Move()
-	//	Stats()
 }
 
 type piece struct {

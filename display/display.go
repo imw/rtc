@@ -73,7 +73,6 @@ func drawSquare(s tcell.Screen, x1, y1, x2, y2 int, boardStyle tcell.Style, piec
 	drawText(s, hcenter-offset, vcenter, hcenter+offset, vcenter, pieceStyle, text)
 }
 
-//TODO: fix hardcoded board size?
 func Render(b *board.Board, s tcell.Screen) {
 	s.Clear()
 	defStyle := tcell.StyleDefault.Background(tcell.ColorReset).Foreground(tcell.ColorReset)

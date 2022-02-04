@@ -38,22 +38,25 @@ func (p *Pawn) Side() Color {
 func (p *Pawn) ValidMoves(board Board, loc *Square) []Square {
 	moves := []Square{}
 	moves = append(moves, *loc)
-	moves = append(moves, p.attackMoves(board, loc)...)
-	//TODO only append these if not occupied by opponent
 	if p.core.side == White {
 		if p.moved == false {
 			moves = append(moves, seekForward(board, loc, 2)...)
 		}
 		moves = append(moves, seekForward(board, loc, 1)...)
 	} else {
-
 		if p.moved == false {
 			moves = append(moves, seekReverse(board, loc, 2)...)
 		}
 		moves = append(moves, seekReverse(board, loc, 1)...)
-
 	}
 
+	for i, v := range moves {
+		if p.opponentOccupied(v) {
+			moves = removeSquare(moves, i)
+		}
+	}
+
+	moves = append(moves, p.attackMoves(board, loc)...)
 	return moves
 
 }
@@ -67,21 +70,30 @@ func (p *Pawn) attackMoves(board Board, loc *Square) []Square {
 	}
 	moves := []Square{}
 	for _, v := range search(sub, yop, board, loc, 1) {
-		if v.Occupied() {
-			if v.Occupant().Side() != p.core.side {
-				moves = append(moves, v)
-			}
+		if p.opponentOccupied(v) {
+			moves = append(moves, v)
 		}
 	}
 	for _, v := range search(add, yop, board, loc, 1) {
-		if v.Occupied() {
-			if v.Occupant().Side() != p.core.side {
-				moves = append(moves, v)
-			}
+		if p.opponentOccupied(v) {
+			moves = append(moves, v)
 		}
 	}
 
 	return moves
+}
+
+func (p *Pawn) opponentOccupied(s Square) bool {
+	if s.Occupied() {
+		if s.Occupant().Side() != p.core.side {
+			return true
+		}
+	}
+	return false
+}
+
+func removeSquare(sqs []Square, index int) []Square {
+	return append(sqs[:index], sqs[index+1:]...)
 }
 
 func (p *Pawn) Move() {

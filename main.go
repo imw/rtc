@@ -25,14 +25,19 @@ type Config struct {
 	HostB string `default:"localhost"`
 	PortB string `default:"4321"`
 	ID    string `default:"A"`
+	Debug bool   `default:"false"`
 }
 
 func main() {
+
 	var c Config
 	err := envconfig.Process("rtc", &c)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+
+	util.Debug = c.Debug
+
 	util.Write(fmt.Sprintf("Config: %v", c))
 
 	var b *board.Board
@@ -41,6 +46,7 @@ func main() {
 	var remoteport string
 	var localhost string
 	var localport string
+
 	if c.ID == "A" {
 		localhost = c.HostA
 		localport = c.PortA
@@ -68,8 +74,6 @@ func main() {
 	defer l.Close()
 	util.Write(fmt.Sprintf("Listening with listener: %v", l))
 
-	//TODO loading/waiting screen
-
 	//setup display
 	encoding.Register()
 	s, e := tcell.NewScreen()
@@ -95,7 +99,6 @@ func main() {
 		client, err := rpc.DialHTTP("tcp", remotehost+":"+remoteport)
 		if err != nil {
 			util.Write(fmt.Sprintf("error attempting to dial %s:%s: %s", remotehost, remoteport, err))
-			time.Sleep(time.Duration(dialCount) * time.Second)
 		} else {
 			g.SetClient(client)
 			break
@@ -108,6 +111,7 @@ func main() {
 				os.Exit(0)
 			}
 		}
+		time.Sleep(time.Duration(1) * time.Second)
 	}
 
 	display.Greeting(s)
@@ -118,7 +122,6 @@ func main() {
 		}
 	}(b, s)
 
-	//TODO something in board needs to send from channel
 	for {
 		switch ev := s.PollEvent().(type) {
 		case *tcell.EventResize:
