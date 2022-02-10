@@ -55,7 +55,9 @@ func (gr *GameRPC) DoMove(m board.Move, exit *int) error {
 	p := loc.Occupant()
 	util.Write(fmt.Sprintf("address of p: %v", &p))
 	tgt.SetOccupant(&p)
-	loc.SetOccupant(nil)
+	if loc != tgt {
+		loc.SetOccupant(nil)
+	}
 	p.Move()
 	util.Write(fmt.Sprintf("after move: %v to %v", loc, tgt))
 	// if p side is this (local) side, set cursor loc to p loc

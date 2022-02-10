@@ -114,5 +114,3 @@ func sub(a, b int) int {
 func id(a, b int) int {
 	return a
 }
-
-// TODO: record moves for playback/rollback
