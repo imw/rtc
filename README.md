@@ -39,7 +39,7 @@ Contributions extremely welcome! These can come in the form of filing and
 issue, contributing a patch with fixes or new features, or starting
 a discussion about something you'd like to see in Real Time Chess!
 
-###Coming soon:
+### Coming soon:
 * Area damage and hitpoints
 * Scorekeeping and game playback
 * Automatic local network discovery/setup
