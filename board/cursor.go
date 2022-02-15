@@ -1,12 +1,15 @@
 package board
 
+//CursorMode enumerates whether cursor is set to select or insert
 type CursorMode int
 
+//Select chooses a piece to move, Insert chooses a target
 const (
 	Select CursorMode = iota
 	Insert
 )
 
+//Cursor encapsulates information about move selection
 type Cursor struct {
 	loc    *Square
 	target *Square

@@ -1,8 +1,9 @@
 package board
 
+//Piece is an universal interface for difference chess pieces
 type Piece interface {
 	Name() string
-	Ascii() string
+	ASCII() string
 	Unicode() string
 	Side() Color
 	ValidMoves(Board, *Square) []Square

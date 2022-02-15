@@ -19,6 +19,7 @@ import (
 	"0x539.lol/rtc/util"
 )
 
+//Config encapsulates runtime config of RTC application for use by envconfig
 type Config struct {
 	HostA string `default:"localhost"`
 	PortA string `default:"1234"`
