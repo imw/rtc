@@ -6,8 +6,8 @@ is intended to be played over a local network.
 Opponnents do not take turns. Instead, they are limited only by the speed with
 which they execute their desired moves.
 
-You can download a ready to play version from the Releases section. Or you can
-clone this repository.
+You can download a ready to play version from the Releases section. Or if you 
+have a go toolchain you can clone this repository, and build with `go build -o rtc`.
 
 ## Setup
 Real time chess runs in your terminal. There are two players, A and B. To start
@@ -23,7 +23,7 @@ export RTC_HostA='192.168.1.204'
 export RTC_HostB='192.168.1.208'
 ```
 Your opponent should do the same, but switch their RTC_ID to B. Now you're
-ready to play!
+ready to play! Start the game by executing the binary `./rtc`
 
 ## Gameplay
 You can use the arrow or WASD keys to move your cursor. 'Return' switches from
@@ -35,7 +35,7 @@ pieces, go on the offensive, and DEATH TO THE KING!@!
 
 
 ## Contributing
-Contributions extremely welcome! These can come in the form of filing and
+Contributions extremely welcome! These can come in the form of filing an
 issue, contributing a patch with fixes or new features, or starting
 a discussion about something you'd like to see in Real Time Chess!
 
