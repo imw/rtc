@@ -24,8 +24,9 @@ func (s *Square) Name() string {
 func (s *Square) SetOccupant(p *Piece) {
 	if p == nil {
 		s.occupant = nil
+	} else {
+		s.occupant = *p
 	}
-	s.occupant = *p
 }
 
 //Occupant returns an occupying piece, if any

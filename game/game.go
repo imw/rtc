@@ -18,11 +18,11 @@ type Game struct {
 }
 
 //New returns a new Game struct and GameRPC client
-func New(b *board.Board) (*Game, *RPC) {
+func New(b *board.Board) (*Game, *GameRPC) {
 	g := &Game{
 		board: b,
 	}
-	gr := &RPC{
+	gr := &GameRPC{
 		game: g,
 	}
 	return g, gr
@@ -42,8 +42,8 @@ func (g *Game) SetClient(c *rpc.Client) {
 	g.client = c
 }
 
-//RPC is an RPC wrapper for the Game structure
-type RPC struct {
+//GameRPC is an RPC wrapper for the Game structure
+type GameRPC struct {
 	game *Game
 }
 
@@ -64,7 +64,7 @@ func (g *Game) Peered() bool {
 }
 
 //DoMove executes a move against a local game board
-func (gr *RPC) DoMove(m board.Move, exit *int) error {
+func (gr *GameRPC) DoMove(m board.Move, exit *int) error {
 	util.Write(fmt.Sprintf("Local move: %v", m))
 	loc := gr.game.board.Position(m.Loc)
 	tgt := gr.game.board.Position(m.Tgt)
@@ -85,7 +85,7 @@ func (gr *RPC) DoMove(m board.Move, exit *int) error {
 }
 
 //Register updates the peerID for a game session
-func (gr *RPC) Register(clientID string, exit *int) error {
+func (gr *GameRPC) Register(clientID string, exit *int) error {
 	gr.game.peerID = clientID
 	return nil
 }
