@@ -7,6 +7,7 @@ import (
 
 	"0x539.lol/rtc/board"
 	"0x539.lol/rtc/util"
+	"github.com/gdamore/tcell/v2"
 )
 
 type Game struct {
@@ -23,6 +24,15 @@ func New(b *board.Board) (*Game, *GameRPC) {
 		game: g,
 	}
 	return g, gr
+}
+
+func (g *Game) GetBoard() *board.Board {
+	return g.board
+}
+
+func (g *Game) RecieveEvent(ev *tcell.EventKey) board.Move {
+	b := g.GetBoard()
+	return b.ProcessEvent(ev)
 }
 
 func (g *Game) SetClient(c *rpc.Client) {
