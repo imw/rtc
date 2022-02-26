@@ -1,9 +1,11 @@
 package board
 
+//Knight implements the Piece interface for knights
 type Knight struct {
 	core *piece
 }
 
+//NewKnight returns a new Knight
 func NewKnight(side Color) Piece {
 	c := &piece{
 		name: "Knight",
@@ -14,26 +16,31 @@ func NewKnight(side Color) Piece {
 	}
 }
 
+//Name returns the name of this piece
 func (p *Knight) Name() string {
 	return p.core.name
 }
 
-func (p *Knight) Ascii() string {
+//ASCII returns the Ascii representation for this piece
+func (p *Knight) ASCII() string {
 	if p.core.side == White {
 		return string('n')
-	} else {
-		return string('N')
 	}
+	return string('N')
 }
 
+//Unicode returns the unicode rune for this piece
 func (p *Knight) Unicode() string {
 	return string(FillKnight)
 }
 
+//Side return's this piece's side
 func (p *Knight) Side() Color {
 	return p.core.side
 }
 
+//ValidMoves returns a slice of squares representing valid moves for this
+//piece, given board and location
 func (p *Knight) ValidMoves(board Board, loc *Square) []Square {
 	moves := []Square{}
 	moves = append(moves, *loc)
@@ -62,5 +69,5 @@ func (p *Knight) ValidMoves(board Board, loc *Square) []Square {
 	return moves
 }
 
-//NOOP
+//Move is a noop for Knights
 func (p *Knight) Move() {}

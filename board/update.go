@@ -8,8 +8,10 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
+//Input enumerates the different actions that a keystroke might represent
 type Input int
 
+//enumeration of actions
 const (
 	Left Input = iota
 	Up
@@ -20,34 +22,40 @@ const (
 	Noop
 )
 
+//SortDirection enumerates whether a sort should be ascending or descending
 type SortDirection int
 
+//SortAxis enumerates whether a sort should be performed Rank-wise or File-wise
 type SortAxis int
 
+//enumeration of axes
 const (
 	Rank SortAxis = iota
 	File
 )
 
+//enumeration of directions
 const (
 	Forward SortDirection = iota
 	Reverse
 )
 
+//Move encapsualtes the data needed to execute a move on an existing Board
 type Move struct {
 	Loc string
 	Tgt string
 	Seq int
 }
 
+//ProcessEvent takes a tcell keypress event, interprets it as input, and
+//applies it according to cursor mode
 func (b *Board) ProcessEvent(ev *tcell.EventKey) Move {
 	util.Write(fmt.Sprintf("Active Cursor: %v", b.activeCursor()))
 	input := inputFromKeypress(ev)
 	if b.activeCursor().mode == Insert {
 		return b.applyInsert(input)
-	} else {
-		return b.applySelect(input)
 	}
+	return b.applySelect(input)
 }
 
 func (b *Board) applyInsert(i Input) Move {

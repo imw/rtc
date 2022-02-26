@@ -9,6 +9,7 @@ import (
 
 const boardSize = 8
 
+//Board represents a game board
 type Board struct {
 	size        int
 	squares     [boardSize][boardSize]Square
@@ -17,8 +18,10 @@ type Board struct {
 	toMove      Color
 }
 
+//Color enumerates the opposing sides
 type Color int
 
+//possible colors are White and Black
 const (
 	White Color = iota
 	Black
@@ -27,12 +30,11 @@ const (
 func invertColor(c Color) Color {
 	if c == White {
 		return Black
-	} else {
-		return White
 	}
+	return White
 }
 
-//create and color squares
+//New returns a new, initialized game board
 func New(c Color) *Board {
 	b := new(Board)
 	b.size = boardSize
@@ -71,9 +73,8 @@ func New(c Color) *Board {
 func (b *Board) activeCursor() *Cursor {
 	if b.toMove == White {
 		return &b.whiteCursor
-	} else {
-		return &b.blackCursor
 	}
+	return &b.blackCursor
 }
 
 func (b *Board) switchCursor() {
@@ -102,27 +103,33 @@ func (b *Board) resetCursor() {
 	}
 }
 
+//Moves returns the valid next moves for the currently active cursor
 func (b *Board) Moves() []Square {
 	c := b.activeCursor()
 	return c.choices(*b)
 }
 
+//Target returns the target of the currently active cursor
 func (b *Board) Target() *Square {
 	return b.activeCursor().target
 }
 
+//Loc returns the location of the currently active cursor
 func (b *Board) Loc() *Square {
 	return b.activeCursor().loc
 }
 
+//SetLoc moves the currently active cursor's location to s
 func (b *Board) SetLoc(s *Square) {
 	b.activeCursor().loc = s
 }
 
+//Side returns which side's cursor is active
 func (b *Board) Side() Color {
 	return b.activeCursor().color
 }
 
+//Flatten returns a sorted 1-d array of pointers to board squares
 func (b *Board) Flatten() [boardSize * boardSize]*Square {
 	sqs := [boardSize * boardSize]*Square{}
 	k := 0
@@ -135,7 +142,7 @@ func (b *Board) Flatten() [boardSize * boardSize]*Square {
 	return sqs
 }
 
-//decode file rune to i, convert rank to j and invert
+//Position returns a pointer to a square given the name of that square
 func (b *Board) Position(name string) *Square {
 	file := name[0]
 	fileidx := file - 'A'
@@ -172,6 +179,7 @@ func (b *Board) setup() {
 	b.Position("H8").occupant = NewRook(Black)
 }
 
+//Size returns size of board
 func (b *Board) Size() int {
 	return b.size
 }

@@ -10,17 +10,19 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
+//Game encapsulates data about a game session
 type Game struct {
 	board  *board.Board
 	peerID string
 	client *rpc.Client
 }
 
-func New(b *board.Board) (*Game, *GameRPC) {
+//New returns a new Game struct and GameRPC client
+func New(b *board.Board) (*Game, *RPC) {
 	g := &Game{
 		board: b,
 	}
-	gr := &GameRPC{
+	gr := &RPC{
 		game: g,
 	}
 	return g, gr
@@ -35,14 +37,17 @@ func (g *Game) RecieveEvent(ev *tcell.EventKey) board.Move {
 	return b.ProcessEvent(ev)
 }
 
+//SetClient updates the rpc client for a game
 func (g *Game) SetClient(c *rpc.Client) {
 	g.client = c
 }
 
-type GameRPC struct {
+//RPC is an RPC wrapper for the Game structure
+type RPC struct {
 	game *Game
 }
 
+//SendMove sends a move to a remote peer
 func (g *Game) SendMove(m board.Move) error {
 	var exit int
 	err := g.client.Call("GameRPC.DoMove", m, &exit)
@@ -53,11 +58,13 @@ func (g *Game) SendMove(m board.Move) error {
 	return err
 }
 
+//Peered returns whether a game session has an active peer
 func (g *Game) Peered() bool {
 	return g.peerID != ""
 }
 
-func (gr *GameRPC) DoMove(m board.Move, exit *int) error {
+//DoMove executes a move against a local game board
+func (gr *RPC) DoMove(m board.Move, exit *int) error {
 	util.Write(fmt.Sprintf("Local move: %v", m))
 	loc := gr.game.board.Position(m.Loc)
 	tgt := gr.game.board.Position(m.Tgt)
@@ -77,7 +84,8 @@ func (gr *GameRPC) DoMove(m board.Move, exit *int) error {
 	return nil
 }
 
-func (gr *GameRPC) Register(clientID string, exit *int) error {
+//Register updates the peerID for a game session
+func (gr *RPC) Register(clientID string, exit *int) error {
 	gr.game.peerID = clientID
 	return nil
 }

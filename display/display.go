@@ -17,6 +17,7 @@ const (
 	squareWidth  = 2
 )
 
+//Loading displays a loading scrren
 func Loading(s tcell.Screen) {
 	w, h := s.Size()
 	s.Clear()
@@ -64,6 +65,7 @@ func drawSquare(s tcell.Screen, x1, y1, x2, y2 int, boardStyle tcell.Style, piec
 	drawText(s, hcenter-offset, vcenter, hcenter+offset, vcenter, pieceStyle, text)
 }
 
+//Render updates a board drawing from a game board
 func Render(g *game.Game, s tcell.Screen) {
 	b := g.GetBoard()
 	s.Clear()
