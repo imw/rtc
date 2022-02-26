@@ -25,6 +25,8 @@ export RTC_HostB='192.168.1.208'
 Your opponent should do the same, but switch their RTC_ID to B. Now you're
 ready to play! Start the game by executing the binary `./rtc`
 
+If you want to test the game without another player, you can fire up wo separate terminal windows, and `export RTC_ID=B` in just one of them before starting the game in both.
+
 ## Gameplay
 You can use the arrow or WASD keys to move your cursor. 'Return' switches from
 select mode to insert mode. In insert mode, you can move your targeting
