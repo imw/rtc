@@ -13,7 +13,7 @@ func TestEngine(t *testing.T) {
 		HostB: "localhost",
 		PortB: "4321",
 		ID:    "A",
-		Debug: true,
+		Debug: false,
 	}
 
 	configB := configA
