@@ -2,6 +2,7 @@ package display
 
 import (
 	"0x539.lol/rtc/board"
+	"0x539.lol/rtc/game"
 	"0x539.lol/rtc/util"
 	"github.com/gdamore/tcell/v2"
 )
@@ -24,17 +25,6 @@ func Loading(s tcell.Screen) {
 	drawText(s, w/2-8, h/2, w/2+8, h/2, style, "REAL TIME CHESS")
 	drawText(s, w/2-10, h/2+1, w/2+10, h/2+1, tcell.StyleDefault, "Waiting for peer...")
 	drawText(s, w/2-9, h/2+2, w/2+9, h/2+2, tcell.StyleDefault, "Press ESC to exit.")
-	s.Show()
-}
-
-//Greeting displays a ready greeting
-func Greeting(s tcell.Screen) {
-	w, h := s.Size()
-	s.Clear()
-	style := tcell.StyleDefault.Foreground(tcell.ColorCadetBlue.TrueColor()).Background(tcell.ColorWhite)
-	drawText(s, w/2-8, h/2, w/2+8, h/2, style, "REAL TIME CHESS")
-	drawText(s, w/2-9, h/2+1, w/2+9, h/2+1, tcell.StyleDefault, "Press ESC to exit.")
-	drawText(s, w/2-12, h/2+2, w/2+12, h/2+2, tcell.StyleDefault, "Press any key to begin.")
 	s.Show()
 }
 
@@ -76,7 +66,8 @@ func drawSquare(s tcell.Screen, x1, y1, x2, y2 int, boardStyle tcell.Style, piec
 }
 
 //Render updates a board drawing from a game board
-func Render(b *board.Board, s tcell.Screen) {
+func Render(g *game.Game, s tcell.Screen) {
+	b := g.GetBoard()
 	s.Clear()
 	defStyle := tcell.StyleDefault.Background(tcell.ColorReset).Foreground(tcell.ColorReset)
 	s.SetStyle(defStyle)

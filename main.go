@@ -29,17 +29,31 @@ type Config struct {
 	Debug bool   `default:"false"`
 }
 
-func main() {
+type GameEngine struct {
+	ID       string
+	game     *game.Game
+	rpc      *game.GameRPC
+	listener net.Listener
+}
 
+type ExitCode int
+
+const (
+	Success ExitCode = iota
+	Failure
+)
+
+func main() {
 	var c Config
 	err := envconfig.Process("rtc", &c)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	util.Debug = c.Debug
+	os.Exit(int(entrypoint(c)))
+}
 
-	util.Write(fmt.Sprintf("Config: %v", c))
+func setup(c Config) (GameEngine, error) {
 
 	var b *board.Board
 
@@ -66,26 +80,67 @@ func main() {
 
 	//register RPC
 	rpc.Register(gr)
+
+	mux := http.NewServeMux()
+	http.DefaultServeMux = mux
 	rpc.HandleHTTP()
+
 	l, e := net.Listen("tcp", localhost+":"+localport)
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}
 	go http.Serve(l, nil)
-	defer l.Close()
 	util.Write(fmt.Sprintf("Listening with listener: %v", l))
+
+	dialCount := 1
+	for {
+		//init client for peer
+		util.Write(fmt.Sprintf("Dial #%d", dialCount))
+		client, e := rpc.DialHTTP("tcp", remotehost+":"+remoteport)
+		if e != nil {
+			util.Write(fmt.Sprintf("error attempting to dial %s:%s: %s", remotehost, remoteport, e))
+			if dialCount > 10 {
+				return GameEngine{}, e
+			}
+		} else {
+			g.SetClient(client)
+			break
+		}
+		dialCount = dialCount + 1
+		/*
+			switch ev := s.PollEvent().(type) {
+			case *tcell.EventKey:
+				if ev.Key() == tcell.KeyEscape {
+					s.Fini()
+					return Success
+				}
+			}
+		*/
+		time.Sleep(time.Duration(1) * time.Second)
+	}
+
+	return GameEngine{c.ID, g, gr, l}, nil
+
+}
+
+func entrypoint(c Config) ExitCode {
+
+	util.Debug = c.Debug
+	util.Write(fmt.Sprintf("Config: %v", c))
 
 	//setup display
 	encoding.Register()
 	s, e := tcell.NewScreen()
 	if e != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", e)
-		os.Exit(1)
+		return Failure
 	}
+
 	if e := s.Init(); e != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", e)
-		os.Exit(1)
+		return Failure
 	}
+
 	defStyle := tcell.StyleDefault.
 		Background(tcell.ColorBlack).
 		Foreground(tcell.ColorWhite)
@@ -93,35 +148,19 @@ func main() {
 
 	display.Loading(s)
 
-	dialCount := 1
-	for {
-		//init client for peer
-		util.Write(fmt.Sprintf("Dial #%d", dialCount))
-		client, err := rpc.DialHTTP("tcp", remotehost+":"+remoteport)
-		if err != nil {
-			util.Write(fmt.Sprintf("error attempting to dial %s:%s: %s", remotehost, remoteport, err))
-		} else {
-			g.SetClient(client)
-			break
-		}
-		dialCount = dialCount + 1
-		switch ev := s.PollEvent().(type) {
-		case *tcell.EventKey:
-			if ev.Key() == tcell.KeyEscape {
-				s.Fini()
-				os.Exit(0)
-			}
-		}
-		time.Sleep(time.Duration(1) * time.Second)
+	engine, e := setup(c)
+	if e != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", e)
+		return Failure
 	}
+	defer engine.listener.Close()
 
-	display.Greeting(s)
-	go func(b *board.Board, s tcell.Screen) {
+	go func(g *game.Game, s tcell.Screen) {
 		t := time.NewTicker(10 * time.Millisecond)
 		for range t.C {
-			display.Render(b, s)
+			display.Render(g, s)
 		}
-	}(b, s)
+	}(engine.game, s)
 
 	for {
 		switch ev := s.PollEvent().(type) {
@@ -130,16 +169,18 @@ func main() {
 		case *tcell.EventKey:
 			if ev.Key() == tcell.KeyEscape {
 				s.Fini()
-				os.Exit(0)
+				return Failure
 			} else {
-				move := b.ProcessEvent(ev)
-				var exit int
+				util.Write(fmt.Sprintf("Event registered: %v", ev))
+				move := engine.game.RecieveEvent(ev)
+				util.Write(fmt.Sprintf("Move generated: %v", move))
+				var rpcExitCode int
 				if move.Seq > 0 {
-					g.SendMove(move)
-					gr.DoMove(move, &exit)
+					engine.game.SendMove(move)
+					engine.rpc.DoMove(move, &rpcExitCode)
 				}
 
-				display.Render(b, s)
+				display.Render(engine.game, s)
 			}
 		}
 	}
